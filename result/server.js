@@ -82,6 +82,9 @@ app.use(express.static(path.join(__dirname, 'views')));
 app.get('/', function (req, res) {
   res.sendFile(path.resolve(__dirname, 'views/index.html'));
 });
+app.get('/result', function (req, res) {
+  res.sendFile(path.resolve(__dirname, 'views/index.html'));
+});
 
 server.listen(port, function () {
   console.log('App running on port ' + port);
