@@ -1,14 +1,13 @@
-#Menyatakan Service
 services:
-#membuat service bernama vote
   vote:
 #Membuat image dari folder vote dan targetnya development
     build:
       context: ./vote
       target: dev
+    image: 203328187809.dkr.ecr.us-east-1.amazonaws.com/voting:latest
 #Menyatakan env untuk container dari service vote
     environment:
-      - REDIS_HOST=<nama service redis>
+      - REDIS_HOST=redis
 #menunggu redis healthy terlebih dahulu
     depends_on:
       redis:
@@ -33,19 +32,20 @@ services:
 
 
 #membuat service bernama vote
-  Result:
+  result:
 #Membuat image dari folder result
     build: ./result
+    image: 203328187809.dkr.ecr.us-east-1.amazonaws.com/result:latest
 #Command ketika pertama kali container dijalankan
     entrypoint: nodemon --inspect=0.0.0.0 server.js
 #Menyatakan env 
     environment:
-      - DB_USER=<user postgres>
-      - DB_PASS=<password postgres>
-      - DB_HOST=<nama service database>
+      - DB_USER=admin
+      - DB_PASS=smkn1nglegok
+      - DB_HOST=voting_db
       - DB_NAME=voting_data
       - DB_PORT=5432
-      - NODE_ENV=<development/production>
+      - NODE_ENV=production
 #Menunggu service db healthy
     depends_on:
       db:
@@ -68,12 +68,12 @@ services:
 #Membuat image dari folder worker
     build:
       context: ./worker
-#Menyatakan env
+    image: 203328187809.dkr.ecr.us-east-1.amazonaws.com/worker:latest
     environment:
-      - REDIS_HOST=<nama service redis>
-      - DB_HOST=<nama service database>
-      - DB_USER=<user postgres>
-      - DB_PASS=<password postgres>
+      - REDIS_HOST=redis
+      - DB_HOST=voting_db
+      - DB_USER=admin
+      - DB_PASS=smkn1nglegok
 #Menunggu redis dan db healthy
     depends_on:
       redis:
@@ -107,9 +107,9 @@ services:
     image: postgres:15-alpine
 #Menyatakan env
     environment:
-      POSTGRES_USER: <user postgres>
-      POSTGRES_PASSWORD: <password postgres>
-      POSTGRES_DB: voting_data
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "smkn1nglegok"
+      POSTGRES_DB: "voting_data"
 #Mengatur volume untuk database
     volumes:
       - "db-data:/var/lib/postgresql/data"
